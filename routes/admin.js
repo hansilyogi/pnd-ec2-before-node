@@ -869,7 +869,7 @@ router.post("/getMultipleDeliveryOrder",async function(req,res,next){
 
 //Test
 router.post("/completed_ordersV2",async function(req,res,next){
-    
+    console.log("vsvsd");
     try {
         // let completeOrders = await orderSchema.aggregate([
         //     { $match: { status: "Order Delivered" , isActive: false } },    // This is your query
@@ -882,37 +882,16 @@ router.post("/completed_ordersV2",async function(req,res,next){
         let pageIs = Number(page);
 
         let newdataset = [];
-        // let completeOrders = await orderSchema
-        //     .find({ status: "Order Delivered", isActive: false })
-        //     .populate(
-        //         "courierId",
-        //         "firstName lastName fcmToken mobileNo accStatus transport isVerified"
-        //     )
-        //     .populate("customerId")
-        //     .skip((resPerPageIs * pageIs) - resPerPageIs)
-        //     .limit(resPerPageIs)
-        //     .sort({ dateTime: -1 });
-
-        let completeOrders = await orderSchema.aggregate([
-            {
-                $match: {
-                    $and: [
-                        { status: "Order Delivered" },
-                        { isActive: false }
-                    ]
-                }
-            },
-            { $unwind: "$courierId" },
-            {
-                $lookup:
-                    {
-                        from: "couriers",
-                        localField: "courierId",
-                        foreignField: "_id",
-                        as: "Extraa"
-                    }
-            }
-        ]);
+        let completeOrders = await orderSchema
+            .find({ status: "Order Delivered", isActive: false })
+            .populate(
+                "courierId",
+                "firstName lastName fcmToken mobileNo accStatus transport isVerified"
+            )
+            .populate("customerId")
+            .skip((resPerPageIs * pageIs) - resPerPageIs)
+            .limit(resPerPageIs)
+            .sort({ dateTime: -1 });
 
         let orderscomplete = [];
         for (let i = 0; i < completeOrders.length; i++) {
